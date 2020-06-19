@@ -1,26 +1,11 @@
 import java.util.Arrays;
-import java.util.Scanner;
 import game.TicTacToe;
 
 public class gameTest {
     public static void main(String[] args) {
 
-        Scanner scr = new Scanner(System.in);
-        String posRegex = "[12]";
-
-        System.out.println("This program is a game of " +
-                "Tic Tac Toe. Would you like to go " +
-                "1st or 2nd?");
-        int pos = scr.nextInt();
-
-        while(!String.valueOf(pos).matches(posRegex)) {
-
-            System.out.println("Enter either 1 or 2." +
-                    " Would you like to go 1st or 2nd?");
-            pos = scr.nextInt();
-        }
-
-        TicTacToe game = new TicTacToe(pos);
+        TicTacToe game = new TicTacToe();
+        game.setUpGame();
 
         int rowPos;
         int colPos;
@@ -62,7 +47,7 @@ public class gameTest {
                     System.out.println("Error");
             }
 
-            game.displayPlayerStats();
+            game.callPlayerStats(0);
             System.out.println("\nWould you like to continue playing? (Yes/No)");
             String answer = scr.next();
             while (!answer.equals("Yes") && !answer.equals("No")) {
@@ -82,11 +67,11 @@ public class gameTest {
                             " Would you like to go 1st or 2nd?");
                     pos = scr.nextInt();
                 }
-                game.gameRest(pos);
+                game.gameReset(pos);
             }
         }
 
-        game.displayFinalStats();
+        game.callFinalStats();
     }
 
 
