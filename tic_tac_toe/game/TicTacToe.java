@@ -7,8 +7,9 @@
 
         Scanner scr = new Scanner(System.in);
         private char userMark, computerMark;
-        private String gameStatus;
         private int gameType;
+        private String gameStatus;
+        Move plyMove;
         private Players[] player = new Players[2];
         char[] playersMark = new char[] {'X','O'};
         private int playerTurn;
@@ -37,16 +38,15 @@
         public void setUpGame () {
 
             gameMenu();
-            int gChoice = scr.nextInt();
-            while(!validGameOption(gChoice)) {
+            gameType = scr.nextInt();
+            while(!validGameOption(gameType)) {
 
                 System.out.print("Enter either 1, 2, or 3.\n" +
                         "Please select an option");
-                gChoice = scr.nextInt();
-                validGameOption(gChoice);
+                gameType = scr.nextInt();
+                validGameOption(gameType);
             }
 
-            gameType = gChoice;
             switch (gameType) {
                 case 1:
                     initPvP();
@@ -66,6 +66,7 @@
             }
 
             resetBoard();
+            gameStart();
         }
 
         boolean validGameOption (int option) {
@@ -153,7 +154,53 @@
 
         }
 
-        public void displayBoard () {
+        private void gameStart() {
+
+            boolean keepPlaying = true;
+
+            switch (gameType) {
+                case 1:
+                    while (keepPlaying) {
+
+                        while (getGameStatus().equals("ongoing")) {
+                            displayBoard();
+                            System.out.print("\nEnter a move: ");
+
+                            plyMove.row = scr.nextInt();
+                            plyMove.col = scr.nextInt();
+
+                            while (!validateUserMove() || !emptyCell()) {
+                               plyMove.row = scr.nextInt();
+                               plyMove.col = scr.nextInt();
+                            }
+
+                            setSquare();
+                            checkGameStatus();
+                        }
+                    }
+                    displayBoard();
+                    System.out.println();
+                    displayOutcome();
+
+                    break;
+
+                case 2:
+
+                    break;
+
+                case 3:
+
+                    break;
+
+                default:
+                    break;
+
+
+            }
+
+        }
+
+        private void displayBoard () {
 
             String border = "---------";
             System.out.println(border);
@@ -168,10 +215,11 @@
 
         }
 
-        public boolean validateUserMove(int row, int col) {
+        private boolean validateUserMove() {
 
             boolean validMove = true;
-            if (row < 0 || row > 3 || col < 0 || col > 3) {
+
+            if (plyMove.row < 0 || plyMove.row > 3 || plyMove.col < 0 || plyMove.col > 3) {
                 validMove = false;
                 System.out.println("Invalid move. Enter digits in " +
                         "in the range [0,2].");
@@ -179,10 +227,10 @@
             return validMove;
         }
 
-        public boolean emptyCell(int row, int col) {
+        private boolean emptyCell() {
 
             boolean empty = true;
-            if (gameBoard[row][col] != ' ') {
+            if (gameBoard[plyMove.row][plyMove.col] != ' ') {
                 empty = false;
                 System.out.println("This cell is occupied!" +
                         " Choose another one!");
@@ -190,9 +238,9 @@
             return empty;
         }
 
-        public void setSquare(int row, int col) {
+        public void setSquare() {
 
-            player[playerTurn].playerMove(row, col, gameBoard);
+            player[playerTurn].playerMove(plyMove.row, plyMove.col, gameBoard);
             if (playerTurn == 0) {
                 playerTurn = 1;
             } else {
@@ -282,7 +330,25 @@
 
         }
 
-        public void gameReset() {
+        private void displayOutcome() {
+
+            switch(gameStatus) {
+                case "Draw":
+                    System.out.println("Draw");
+                    break;
+                case "User wins":
+                    System.out.println("User Wins");
+                    break;
+                case "Computer wins":
+                    System.out.println("Computer Wins");
+                    break;
+                default:
+                    System.out.println("Error");
+
+            }
+        }
+
+        private void gameReset() {
 
             resetBoard();
 
@@ -311,54 +377,4 @@
     class Move {
         int row;
         int col;
-    }
-
-    class Players {
-        String name;
-        int wins;
-        int losses;
-        int draws;
-        char currentMark;
-        boolean winner;
-        Move plyrMove;
-
-        public Players(String name, char currentMark) {
-            this.name = name;
-            this.currentMark = currentMark;
-            wins = 0;
-            losses = 0;
-            draws = 0;
-            winner = false;
-        }
-
-        void playerMove(int row, int col, char[][] gameBoard) {
-
-            gameBoard[row][col] = this.currentMark;
-
-        }
-
-        public void displayPlayerStats() {
-
-            System.out.printf("Name: %s\n" +
-                            "Wins: %d\nLosses: %d\nDraws: %d\nCurrent Mark: %c\n",
-                            name, wins, losses, draws, currentMark);
-
-        }
-
-        public void displayFinalStats() {
-
-            System.out.println("\nFinal Stats");
-            String stats = String.format("Wins: %d\nLosses: %d\nDraws: %d\n", wins, losses, draws);
-            System.out.println(stats);
-            System.out.println("Thanks for playing!");
-
-        }
-
-        class ComputerAI extends Players {
-
-            public ComputerAI(String name, char currentMark) {
-                super(name, currentMark);
-            }
-        }
-
     }

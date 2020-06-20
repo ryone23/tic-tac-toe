@@ -7,46 +7,6 @@ public class gameTest {
         TicTacToe game = new TicTacToe();
         game.setUpGame();
 
-        int rowPos;
-        int colPos;
-        boolean keepPlaying = true;
-
-        while (keepPlaying) {
-
-            while (game.getGameStatus().equals("ongoing")) {
-
-                game.displayBoard();
-                System.out.print("\nEnter a move: ");
-                rowPos = scr.nextInt();
-                colPos = scr.nextInt();
-
-                while (!game.validateUserMove(rowPos, colPos)
-                        || !game.emptyCell(rowPos, colPos)) {
-                    rowPos = scr.nextInt();
-                    colPos = scr.nextInt();
-                }
-
-                game.setSquare(rowPos, colPos);
-                game.checkGameStatus();
-
-            }
-
-            System.out.println();
-
-            switch (game.getGameStatus()) {
-                case "Draw":
-                    System.out.println("Draw");
-                    break;
-                case "User wins":
-                    System.out.println("User Wins");
-                    break;
-                case "Computer wins":
-                    System.out.println("Computer Wins");
-                    break;
-                default:
-                    System.out.println("Error");
-            }
-
             game.callPlayerStats(0);
             System.out.println("\nWould you like to continue playing? (Yes/No)");
             String answer = scr.next();
