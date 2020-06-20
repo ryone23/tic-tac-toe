@@ -6,7 +6,7 @@ public class gameTest {
 
         TicTacToe game = new TicTacToe();
         game.setUpGame();
-
+        /*
             game.callPlayerStats(0);
             System.out.println("\nWould you like to continue playing? (Yes/No)");
             String answer = scr.next();
@@ -32,6 +32,8 @@ public class gameTest {
         }
 
         game.callFinalStats();
+
+         */
     }
 
 

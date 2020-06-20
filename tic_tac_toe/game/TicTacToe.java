@@ -9,8 +9,8 @@
         private char userMark, computerMark;
         private int gameType;
         private String gameStatus;
-        Move plyMove;
-        private Players[] player = new Players[2];
+        private Players player1, player2;
+        private Players.ComputerAI computer1, computer2;
         char[] playersMark = new char[] {'X','O'};
         private int playerTurn;
         char[][] gameBoard = new char[3][3];
@@ -42,7 +42,7 @@
             while(!validGameOption(gameType)) {
 
                 System.out.print("Enter either 1, 2, or 3.\n" +
-                        "Please select an option");
+                        "Please select an option: ");
                 gameType = scr.nextInt();
                 validGameOption(gameType);
             }
@@ -64,7 +64,7 @@
                     break;
 
             }
-
+            gameStatus = "ongoing";
             resetBoard();
             gameStart();
         }
@@ -86,25 +86,27 @@
 
             String prompt = "Player vs. Player chosen.";
             System.out.println(prompt);
-            System.out.print("Enter the name of Player1: ");
-            String player1 = scr.next();
+            System.out.print("\nEnter the name of Player1: ");
+            String p1 = scr.next();
             System.out.print("\nEnter the name of Player2: ");
-            String player2 = scr.next();
+            String p2 = scr.next();
 
             Random rand = new Random();
 
-            int rand_int = rand.nextInt(1);
+            int rand_int = rand.nextInt(2);
 
             if (rand_int == 0) {
-                System.out.println(player1 + " will go first and " +
-                        "be X's." + player2 + " will be O's");
-                player[0] = new Players(player1, playersMark[0]);
-                player[1] = new Players(player2, playersMark[1]);
+                System.out.println(p1 + " will go first and " +
+                        "be X's." + p2 + " will be O's");
+                player1 = new Players(p1, playersMark[0]);
+                player2 = new Players(p2, playersMark[1]);
+                playerTurn = 0;
             } else {
-                System.out.println(player2 + " will go first and " +
-                        "be X's." + player1 + " will be O's");
-                player[0] = new Players(player1, playersMark[1]);
-                player[1] = new Players(player2, playersMark[0]);
+                System.out.println(p2 + " will go first and " +
+                        "be X's." + p1 + " will be O's");
+                player1 = new Players(p1, playersMark[1]);
+                player2 = new Players(p2, playersMark[0]);
+                playerTurn = 1;
             }
 
         }
@@ -127,12 +129,12 @@
 
             pos--;
             if (pos == 0) {
-                player[0] = new Players("Player", playersMark[0]);
-                player[1] = new Players("Computer", playersMark[1]);
+                player1 = new Players("Player", playersMark[0]);
+                computer1 = new Players.ComputerAI("Computer", playersMark[1]);
 
             } else {
-                player[0] = new Players("Player", playersMark[1]);
-                player[1] = new Players("Computer", playersMark[0]);
+                player1 = new Players("Player", playersMark[1]);
+                computer1 = new Players.ComputerAI("Computer", playersMark[0]);
             }
             gameStatus = "ongoing";
             playerTurn = pos;
@@ -141,8 +143,8 @@
 
         private void initCvC() {
 
-            player[0] = new Players("Computer1", playersMark[0]);
-            player[1] = new Players("Computer2", playersMark[1]);
+            computer1 = new Players.ComputerAI("Computer1", playersMark[0]);
+            computer2 = new Players.ComputerAI("Computer2", playersMark[1]);
             gameStatus = "ongoing";
         }
 
@@ -162,25 +164,22 @@
                 case 1:
                     while (keepPlaying) {
 
-                        while (getGameStatus().equals("ongoing")) {
+                        while (gameStatus.equals("ongoing")) {
                             displayBoard();
-                            System.out.print("\nEnter a move: ");
+                            player1.getPlayerMove(gameStatus, gameBoard, scr);
+                            setSquare(player1);
+                            gameStatus = checkGameStatus();
 
-                            plyMove.row = scr.nextInt();
-                            plyMove.col = scr.nextInt();
-
-                            while (!validateUserMove() || !emptyCell()) {
-                               plyMove.row = scr.nextInt();
-                               plyMove.col = scr.nextInt();
-                            }
-
-                            setSquare();
-                            checkGameStatus();
+                            displayBoard();
+                            player2.getPlayerMove(gameStatus, gameBoard, scr);
+                            setSquare(player2);
+                            gameStatus = checkGameStatus();
                         }
                     }
                     displayBoard();
                     System.out.println();
                     displayOutcome();
+                    postGameMenu();
 
                     break;
 
@@ -215,32 +214,11 @@
 
         }
 
-        private boolean validateUserMove() {
+        public void setSquare(Players currentPlayer) {
 
-            boolean validMove = true;
-
-            if (plyMove.row < 0 || plyMove.row > 3 || plyMove.col < 0 || plyMove.col > 3) {
-                validMove = false;
-                System.out.println("Invalid move. Enter digits in " +
-                        "in the range [0,2].");
-            }
-            return validMove;
-        }
-
-        private boolean emptyCell() {
-
-            boolean empty = true;
-            if (gameBoard[plyMove.row][plyMove.col] != ' ') {
-                empty = false;
-                System.out.println("This cell is occupied!" +
-                        " Choose another one!");
-            }
-            return empty;
-        }
-
-        public void setSquare() {
-
-            player[playerTurn].playerMove(plyMove.row, plyMove.col, gameBoard);
+            int row = currentPlayer.move.row;
+            int col = currentPlayer.move.col;
+            gameBoard[row][col] = currentPlayer.currentMark;
             if (playerTurn == 0) {
                 playerTurn = 1;
             } else {
@@ -249,7 +227,7 @@
 
         }
 
-        public void checkGameStatus() {
+        public String checkGameStatus() {
 
             boolean isFilled = true;
             int boardCount = 0;
@@ -269,9 +247,9 @@
                 if (gameBoard[r][0] != ' ' && gameBoard[r][0] == gameBoard[r][1] &&
                     gameBoard[r][1] == gameBoard[r][2]) {
                     if (playerTurn == 1) {  // since playerTurn is changed after every
-                        player[0].winner = true;    // a playerTurn = 1 would signify user win
-                    } else {
-                        player[1].winner = true;
+                        return "P1";    // a playerTurn = 1 would signify P1 win and
+                    } else {            // P turn = 2 would signify P2 win regardless if
+                        return "P2";    // computer or actual player
                     }
                 }
             }
@@ -281,9 +259,9 @@
                 if (gameBoard[0][c] != ' ' && gameBoard[0][c] == gameBoard[1][c] &&
                         gameBoard[1][c] == gameBoard[2][c]) {
                     if (playerTurn == 1) {  // since playerTurn is changed after every
-                        player[0].winner = true;    // a playerTurn = 1 would signify user win
-                    } else {
-                        player[1].winner = true;
+                        return "P1";    // a playerTurn = 1 would signify P1 win and
+                    } else {            // P turn = 2 would signify P2 win regardless if
+                        return "P2";    // computer or actual player
                     }
                 }
             }
@@ -292,9 +270,9 @@
             if (gameBoard[0][0] != ' ' && gameBoard[0][0] == gameBoard[1][1] &&
                 gameBoard[1][1] == gameBoard[2][2]) {
                 if (playerTurn == 1) {  // since playerTurn is changed after every
-                    player[0].winner = true;    // a playerTurn = 1 would signify user win
-                } else {
-                    player[1].winner = true;
+                    return "P1";    // a playerTurn = 1 would signify P1 win and
+                } else {            // P turn = 2 would signify P2 win regardless if
+                    return "P2";    // computer or actual player
                 }
             }
 
@@ -302,36 +280,22 @@
             if (gameBoard[2][0] != ' ' && gameBoard[2][0] == gameBoard[1][1] &&
             gameBoard[1][1] == gameBoard[0][2]) {
                 if (playerTurn == 1) {  // since playerTurn is changed after every
-                    player[0].winner = true;    // a playerTurn = 1 would signify user win
-                } else {
-                    player[1].winner = true;
+                    return "P1";    // a playerTurn = 1 would signify P1 win and
+                } else {            // P turn = 2 would signify P2 win regardless if
+                    return "P2";    // computer or actual player
                 }
             }
 
-            if (player[0].winner) {
-                player[0].wins++;
-                player[1].losses++;
-                gameStatus = "User wins";
-
-            } else if (player[1].winner) {
-                player[0].losses++;
-                player[1].wins++;
-                gameStatus = "Computer wins";
-
-            } else if (isFilled) {
-                player[0].draws++;
-                player[1].draws++;
-                gameStatus = "Draw";
-
+            if (isFilled) {
+                return "Draw";
             } else {
-                gameStatus = "ongoing";
+                return "ongoing";
             }
-
 
         }
 
         private void displayOutcome() {
-
+            /*
             switch(gameStatus) {
                 case "Draw":
                     System.out.println("Draw");
@@ -346,6 +310,12 @@
                     System.out.println("Error");
 
             }
+
+             */
+        }
+
+        private void postGameMenu() {
+
         }
 
         private void gameReset() {
@@ -356,25 +326,10 @@
 
         public void callPlayerStats(int playerNum) {
 
-            player[playerNum].displayPlayerStats();
+            //player[playerNum].displayPlayerStats();
 
-        }
-
-        public void callFinalStats() {
-
-            player[0].displayFinalStats();
-            player[1].displayFinalStats();
-
-        }
-
-        public String getGameStatus() {
-            return gameStatus;
         }
 
 
     }
 
-    class Move {
-        int row;
-        int col;
-    }

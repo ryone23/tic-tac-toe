@@ -1,5 +1,7 @@
     package game;
 
+    import java.util.Scanner;
+
     class Players {
         String name;
         int wins;
@@ -7,7 +9,7 @@
         int draws;
         char currentMark;
         boolean winner;
-        Move plyrMove;
+        Move move = new Move();
 
         public Players(String name, char currentMark) {
             this.name = name;
@@ -18,10 +20,16 @@
             winner = false;
         }
 
-        void playerMove(int row, int col, char[][] gameBoard) {
+        void getPlayerMove(String status, char[][] gameBoard, Scanner scr) {
+            System.out.print("\nEnter a move: ");
 
-            gameBoard[row][col] = this.currentMark;
+            move.row = scr.nextInt();
+            move.col = scr.nextInt();
 
+            while (!move.validateMove(gameBoard)) {
+                move.row = scr.nextInt();
+                move.col = scr.nextInt();
+            }
         }
 
         void displayPlayerStats() {
@@ -41,7 +49,7 @@
 
         }
 
-        class ComputerAI extends Players {
+        static class ComputerAI extends Players {
 
             public ComputerAI(String name, char currentMark) {
                 super(name, currentMark);
