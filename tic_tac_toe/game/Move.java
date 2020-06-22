@@ -22,4 +22,8 @@ class Move {
         }
         return validMove;
     }
+
+    void findBestMove() {
+
+    }
 }

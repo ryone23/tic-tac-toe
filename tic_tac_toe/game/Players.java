@@ -9,19 +9,21 @@
         int draws;
         char currentMark;
         boolean winner;
+        boolean isComputer = false;
         Move move = new Move();
 
-        public Players(String name, char currentMark) {
-            this.name = name;
-            this.currentMark = currentMark;
+        public Players() {
             wins = 0;
             losses = 0;
             draws = 0;
             winner = false;
         }
 
-        void getPlayerMove(String status, char[][] gameBoard, Scanner scr) {
-            System.out.print("\nEnter a move: ");
+
+        void getMove(String status, char[][] gameBoard, Scanner scr) {
+
+            System.out.println("\n" + name + "'s Turn");
+            System.out.print("Enter a move: ");
 
             move.row = scr.nextInt();
             move.col = scr.nextInt();
@@ -34,26 +36,23 @@
 
         void displayPlayerStats() {
 
-            System.out.printf("Name: %s\n" +
+            System.out.printf("\nName: %s\n" +
                             "Wins: %d\nLosses: %d\nDraws: %d\nCurrent Mark: %c\n",
                             name, wins, losses, draws, currentMark);
 
         }
 
-        void displayFinalStats() {
-
-            System.out.println("\nFinal Stats");
-            String stats = String.format("Wins: %d\nLosses: %d\nDraws: %d\n", wins, losses, draws);
-            System.out.println(stats);
-            System.out.println("Thanks for playing!");
-
-        }
 
         static class ComputerAI extends Players {
 
-            public ComputerAI(String name, char currentMark) {
-                super(name, currentMark);
+            public ComputerAI() {super(); isComputer = true; }
+
+            void getMove(String status, char[][] gameBoard) {
+                System.out.println(name + "'s Turn");
+
+                move.findBestMove();
             }
+
         }
 
     }
