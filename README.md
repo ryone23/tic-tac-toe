@@ -25,7 +25,9 @@ After finishing, the game has three game modes.
 
 **3. Computer vs. Computer***
 
+
 \*Option 3 always ends in a draw
+
 
 The game features a postgame menu which features
 the following options:
