@@ -4,6 +4,7 @@
 ### **Table of Contents**
 
 * ####  About
+* #### Technologies Used
 * #### Getting Started
 * #### What I've Learned
 
@@ -43,6 +44,10 @@ the following options:
 
 I might implement a GUI in the future, but I am not sure
 as of now.
+
+### **Technologies Used**
+* Java 11
+* Intellij IDE
 
 ### **Getting Started**
 If you want to run the program, all you need is any Java
