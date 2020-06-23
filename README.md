@@ -26,11 +26,15 @@ After finishing, the game has three game modes.
 **3. Computer vs. Computer***
 
 
+
 \*Option 3 always ends in a draw
+
 
 
 The game features a postgame menu which features
 the following options:
+
+
 
 **1. New Game**
 
@@ -39,6 +43,8 @@ the following options:
 **3. Display Stats**
 
 **4. Exit**
+
+
 
 I might implement a GUI in the future, but I am not sure
 as of now.
