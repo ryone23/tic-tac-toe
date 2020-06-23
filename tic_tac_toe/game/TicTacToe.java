@@ -7,7 +7,6 @@
 
         Scanner scr = new Scanner(System.in);
         Random rand = new Random();
-        private char userMark, computerMark;
         int rand_int;
         private int gameType;
         private String gameStatus;
@@ -28,8 +27,6 @@
 
         public void gameMenu () {
 
-            System.out.println("Welcome to Tic Tac Toe!");
-            System.out.println();
             System.out.println("------------------------");
             System.out.println("       Game Types       ");
             System.out.println("------------------------");
@@ -56,6 +53,7 @@
 
             switch (gameType) {
                 case 1:
+                    System.out.println();
                     System.out.println("Player vs. Player chosen.");
                     System.out.print("\nEnter the name of Player1: ");
                     String p1 = scr.next();
@@ -69,22 +67,20 @@
                     break;
 
                 case 2:
-
+                    System.out.println();
                     System.out.print("Player vs. Computer chosen.\n" +
                             "Enter the name of Player1: ");
                     p1 = scr.next();
 
                     player1.name = p1;
-                    computer1.name = "Computer";
+                    computer1.name = "Mr. Roboto";
 
                     initPvC();
                     break;
 
                 case 3:
-
+                    System.out.println();
                     System.out.println("Computer vs. Computer chosen.");
-
-                    Random rand = new Random();
 
                     computer1.name = "Elon Musk";
                     computer2.name = "Bill Gates";
@@ -140,32 +136,24 @@
 
         private void initPvC() {
 
+            rand_int = rand.nextInt(2);
 
-            String prompt = "Would you like to go 1st or 2nd?";
-            System.out.println(prompt);
-            String posRegex = "[12]";
-
-            int pos = scr.nextInt();
-
-            while(!String.valueOf(pos).matches(posRegex)) {
-
-                System.out.print("Invalid input. Please choose '1' or '2': ");
-                pos = scr.nextInt();
-
-            }
-
-            pos--;
-            if (pos == 0) {
+            if (rand_int == 0) {
+                System.out.println(player1.name + " will go first and " +
+                        "be X's. " + computer1.name + " will be O's");
                 player1.currentMark = playersMark[0];
                 computer1.currentMark = playersMark[1];
                 currentPlayer[0]= player1;
                 currentPlayer[1] = computer1;
 
             } else {
+                System.out.println(computer2.name + " will go first and " +
+                        "be X's. " + computer1.name + " will be O's");
                 player1.currentMark = playersMark[1];
                 computer1.currentMark = playersMark[0];
                 currentPlayer[1]= player1;
                 currentPlayer[0] = computer1;
+
             }
             gameStatus = "ongoing";
 
@@ -192,6 +180,7 @@
                 currentPlayer[0] = computer2;
 
             }
+            gameStatus = "ongoing";
         }
 
         private void resetBoard () {
@@ -204,18 +193,20 @@
 
         private void gameStart() {
 
+            System.out.println();
+
             while (gameStatus.equals("ongoing")) {
 
                 displayBoard();
                 pNum = 0;
-                currentPlayer[0].getMove(gameStatus, gameBoard, scr);
+                currentPlayer[0].getMove(gameStatus, gameBoard);
                 setSquare();
                 gameStatus = checkGameStatus();
 
                 if (gameStatus.equals("ongoing")) {
                     displayBoard();
                     pNum = 1;
-                    currentPlayer[1].getMove(gameStatus, gameBoard, scr);
+                    currentPlayer[1].getMove(gameStatus, gameBoard);
                     setSquare();
                     gameStatus = checkGameStatus();
                 }
@@ -224,7 +215,8 @@
             System.out.println();
             displayOutcome();
             resetBoard();
-            System.out.println("---Game Over---");
+            System.out.println();
+            System.out.println("GAME OVER");
             postGameMenu();
             getPostGameChoice();
 
@@ -328,15 +320,16 @@
 
             }
 
-
         }
 
         private void postGameMenu() {
             System.out.println();
-            System.out.println("Options");
+            System.out.println("-------------------");
+            System.out.println("      Options      ");
+            System.out.println("-------------------");
             System.out.println("1. New Game");
             System.out.println("2. Change Game Type");
-            System.out.println("3. Display Stats for Current Game Type");
+            System.out.println("3. Display Stats");
             System.out.println("4. Exit");
             System.out.println();
             System.out.print("Please select an option: ");
@@ -377,19 +370,11 @@
                     break;
 
                 case 2:
-                    System.out.println("------------------------");
-                    System.out.println("       Game Types       ");
-                    System.out.println("------------------------");
-                    System.out.println("1. Player vs. Player");
-                    System.out.println("2. Player vs. Computer");
-                    System.out.println("3. Computer vs. Computer");
-                    System.out.println();
-                    System.out.print("Please select an option: ");
+                    gameMenu();
                     setUpGame();
                     break;
 
                 case 3:
-
                     currentPlayer[0].displayPlayerStats();
                     currentPlayer[1].displayPlayerStats();
                     postGameMenu();
