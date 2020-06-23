@@ -19,19 +19,19 @@ to code a computer AI into the game to compete
 against a player (in this case the user).
 After finishing, the game has three game modes.
 
-**1. Player vs. Player**
-**2. Player vs. Computer**
-**3. Computer vs. Computer***
+***1. Player vs. Player**
+***2. Player vs. Computer**
+***3. Computer vs. Computer***
 
 \*Option 3 always ends in a draw
 
 The game features a postgame menu which features
 the following options:
 
-**1. New Game**
-**2. Change Game Type**
-**3. Display Stats**
-**4. Exit**
+***1. New Game**
+***2. Change Game Type**
+***3. Display Stats**
+***4. Exit**
 
 I might implement a GUI in the future, but I am not sure
 as of now.
