@@ -64,8 +64,4 @@ rewriting, and reformatting code. Second, I got some good
 practice with classes and working through what was necessary
 for each class I created. Third, I learned a new algorithm
 I have never used before (minimax algorithm) and got some 
-practice using recursion. Finally, I learned to be patient,
-calm, and to take things slowly and carefully when I am
-having difficulty getting the output I desire. Also, that it
-is okay if I don't understand how an algorithm works the first
-time.
+practice using recursion. 
